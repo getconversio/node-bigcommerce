@@ -10,4 +10,4 @@ describe('Constructor: #BigCommerce', function(){
     }, Error);
   });
 
-})
+});
