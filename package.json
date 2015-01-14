@@ -4,7 +4,7 @@
   "description": "A node module for authentication and use with the BigCommerce API",
   "main": "./lib/bigcommerce",
   "scripts": {
-    "test": "npm test"
+    "test": "make test"
   },
   "repository": {
     "type": "git",
@@ -25,5 +25,9 @@
   "bugs": {
     "url": "https://github.com/Receiptful/node-bigcommerce/issues"
   },
-  "homepage": "https://github.com/Receiptful/node-bigcommerce"
+  "homepage": "https://github.com/Receiptful/node-bigcommerce",
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "mocha": "^2.1.0"
+  }
 }
