@@ -1,0 +1,29 @@
+{
+  "name": "node-bigcommerce",
+  "version": "1.0.0",
+  "description": "A node module for authentication and use with the BigCommerce API",
+  "main": "./lib/bigcommerce",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Receiptful/node-bigcommerce.git"
+  },
+  "keywords": [
+    "bigcommerce",
+    "oauth2.0",
+    "oauth",
+    "receiptful",
+    "api",
+    "ecommerce",
+    "node",
+    "npm"
+  ],
+  "author": "Rick Craig <rick@receiptful.com> Receiptful ",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Receiptful/node-bigcommerce/issues"
+  },
+  "homepage": "https://github.com/Receiptful/node-bigcommerce"
+}
