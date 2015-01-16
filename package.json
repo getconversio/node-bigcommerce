@@ -28,7 +28,9 @@
   "homepage": "https://github.com/Receiptful/node-bigcommerce",
   "devDependencies": {
     "chai": "^1.10.0",
-    "mocha": "^2.1.0"
+    "mocha": "^2.1.0",
+    "nock": "^0.57.0",
+    "sinon": "^1.12.2"
   },
   "dependencies": {}
 }
