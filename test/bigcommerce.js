@@ -38,7 +38,7 @@ describe('Request: #BigCommerce', function(){
     var clock = sinon.useFakeTimers(),
       request = new Request('api.bigcommerce.com');
 
-    request.completeRequest('post', '/orders', function(){}, {});
+    request.completeRequest('post', '/orders', {}, function(){});
     
     var spy = sinon.spy(request, 'completeRequest');
     clock.tick(15001);
@@ -54,10 +54,10 @@ describe('Request: #BigCommerce', function(){
       .reply(400, {});
 
     var request = new Request('api.bigcommerce.com');
-    request.completeRequest('post', '/orders', function(err, data, res){
+    request.completeRequest('post', '/orders', {}, function(err, data, res){
       err.should.not.be.null;
       done();
-    }, {});
+    });
 
   });
 
@@ -67,11 +67,11 @@ describe('Request: #BigCommerce', function(){
       .reply(200, {error: 'An error has occurred.'});
 
     var request = new Request('api.bigcommerce.com', null);
-    request.completeRequest('post', '/orders', function(err, data, res){
+    request.completeRequest('post', '/orders', {}, function(err, data, res){
       err.should.not.be.null;
       err.message.should.equal('An error has occurred.');
       done();
-    }, {});
+    });
   });
 
   it('Should return an error the request JSON is malformed', function(done){
@@ -80,11 +80,11 @@ describe('Request: #BigCommerce', function(){
       .reply(200, '<malformed>');
 
     var request = new Request('api.bigcommerce.com');
-    request.completeRequest('post', '/orders', function(err, data, res){
+    request.completeRequest('post', '/orders', {}, function(err, data, res){
       err.should.not.be.null;
       err.message.should.equal('Unexpected token <');
       done();
-    }, {});
+    });
   });
 
   it('Should return a JSON object on success', function(done){
@@ -93,11 +93,11 @@ describe('Request: #BigCommerce', function(){
       .reply(200, {order:true});
 
     var request = new Request('api.bigcommerce.com');
-    request.completeRequest('post', '/orders', function(err, data, res){
+    request.completeRequest('post', '/orders', {}, function(err, data, res){
       should.not.exist(err);
       data.should.be.a('object');
       done();
-    }, {});
+    });
   });
 
 });
