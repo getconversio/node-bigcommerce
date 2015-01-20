@@ -65,13 +65,13 @@ describe('Verify: #BigCommerce', function(){
 
 });
 
-describe('Load: #BigCommerce', function(){
+describe('Callback: #BigCommerce', function(){
 
   it('Should return and error when an invalid signature is sent', function(done){
     var config = { secret: '123456abcdef' },
       bc = new BigCommerce(config);
 
-    bc.load('eyJmb28iOiJmb28ifQ==.Zm9v', function(err){
+    bc.callback('eyJmb28iOiJmb28ifQ==.Zm9v', function(err){
       err.should.not.be.null;
       done();
     });
@@ -81,7 +81,7 @@ describe('Load: #BigCommerce', function(){
     var config = { secret: '123456abcdef' },
       bc = new BigCommerce(config);
 
-    bc.load('eyJmb28iOiJmb28ifQ==.YjMzMTQ2ZGU4ZTUzNWJiOTI3NTI1ODJmNzhiZGM' +
+    bc.callback('eyJmb28iOiJmb28ifQ==.YjMzMTQ2ZGU4ZTUzNWJiOTI3NTI1ODJmNzhiZGM' +
       '5NzBjNGQ3MjZkZDdkMDY1MjdkZGYxZDA0NGZjNDVjYmNkMA==', function(err, data){
       should.not.exist(err);
       data.foo.should.equal('foo');
