@@ -276,6 +276,6 @@ npm test
 
 ## Contributing
 
-This module was original written to be used with Receiptful and is used in a production environment currently. This will ensure that this module is well maintained, bug free and as up to date as possible.
+This module was originally written to be used with [Receiptful](https://receiptful.com) and is used in a production environment currently. This will ensure that this module is well maintained, bug free and as up to date as possible.
 
 Receiptful's developers will continue to make updates as often as required to have a consistently bug free platform, but we are happy to review any feature requests or issues and are accepting constructive pull requests.
