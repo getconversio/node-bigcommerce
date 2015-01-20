@@ -64,18 +64,21 @@ router.get('/auth', function(req, res) {
 });
 ```
 
-The 'authorise' method retuires the query parameters from the request to be passed. These are required to request a permanent access token which will be passed back in the data object.
+The 'authorise' method requires the query parameters from the request to be passed. These are required to request a permanent access token which will be passed back in the data object.
 
 An example data object:
 
 ```
-{ access_token: '9df3b01c60df20d13843841ff0d4482c',
+{ 
+  access_token: '9df3b01c60df20d13843841ff0d4482c',
   scope: 'store_v2_orders_read_only store_v2_products_read_only users_basic_information store_v2_default',
-  user: 
-   { id: 12345,
-     username: 'John Smith',
-     email: 'john@success.com' },
-  context: 'stores/x43tqo' }
+  user: { 
+    id: 12345,
+    username: 'John Smith',
+    email: 'john@success.com' 
+  },
+  context: 'stores/x43tqo' 
+}
 ```
 
 From this object you can store the 'access_token' for re-use when calling the Big Commerce API.
@@ -103,7 +106,8 @@ router.get('/load', function(req, res) {
 The 'callback' method requires the 'signed_payload' query parameter to be passed from the request. This is used to verify that the request has come from Big Commerce. The callback method returns the following object:
 
 ```
-{ user: { 
+{ 
+  user: { 
     id: 12345, 
     email: 'john@success.com' 
   },
@@ -113,7 +117,7 @@ The 'callback' method requires the 'signed_payload' query parameter to be passed
 }
 ```
 
-This will allow you to automatically log the user in (if required) when BigCommerce calls the load endpoint or remove/label a user that has uninstalled your application from thier Big Commerce account.
+This will allow you to automatically log the user in (if required) when BigCommerce calls the load endpoint or remove/label a user that has uninstalled your application from their Big Commerce account.
 
 ## Calling the API
 
@@ -203,7 +207,7 @@ bigCommerce.post('/products?name=' + escape('Plain T-Shirt'), null, function(err
 
 ## Logging
 
-There are 2 levels of logging which can be set in the config during instantiation. By default the logging level is set to 'errors', but for further debugging the log level of 'info' can be set:
+There are 2 levels of logging which can be set in the config during instantiation. By default the logging level is set to 'errors'. For more verbose debugging the log level of 'info' can be set:
 
 ```javascript
 var BigCommerce = require('node-bigcommerce');
@@ -214,7 +218,6 @@ var bigCommerce = new BigCommerce({
   accessToken: '9df3b01c60df20d13843841ff0d4482c'
 });
 
-// Replace 'post' with 'put' for a put call
 bigCommerce.post('/products?name=' + escape('Plain T-Shirt'), null, function(err, data, response){
   // Catch any errors, data will be null
   // The response object is passed back for convenience
@@ -225,7 +228,7 @@ We recommend you only use the log level 'info' on a development build as it logs
 
 ## Notes
 
-You can instantiate the BigCommerce object within the script and re-use throughout. The config object within the BigCommerce allows the addition of other elements after the initial instantiation. For example, in a scenario when you have the authorisation and a call to the api, you can do the following:
+You can instantiate the BigCommerce object within a script and re-use throughout. The config object within the BigCommerce allows the addition of other elements after the initial instantiation. For example, in a scenario when you have the authorisation and a call to the api, you can do the following:
 
 ```javascript
 var express = require('express'),
@@ -264,3 +267,15 @@ router.get('/products', function(req, res) {
   })
 });
 ```
+
+## Testing
+
+```
+npm test
+```
+
+## Contributing
+
+This module was original written to be used with Receiptful and is used in a production environment currently. This will ensure that this module is well maintained, bug free and as up to date as possible.
+
+Receiptful's developers will continue to make updates as often as required to have a consistently bug free platform, but we are happy to review any feature requests or issues and are accepting constructive pull requests.
