@@ -1,5 +1,5 @@
 {
-  "name": "node-bigcommerce",
+  "name": "bigcommerce",
   "version": "1.0.0",
   "description": "A node module for authentication and use with the BigCommerce API",
   "main": "./lib/bigcommerce",

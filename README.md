@@ -1,4 +1,4 @@
-# node-bigcommerce
+# Bigcommerce for Node.js
 
 [![Code Climate](https://codeclimate.com/repos/54b673f7e30ba0704d01ed1d/badges/1745c700ed531663cc86/gpa.svg)](https://codeclimate.com/repos/54b673f7e30ba0704d01ed1d/feed) [![Test Coverage](https://codeclimate.com/repos/54b673f7e30ba0704d01ed1d/badges/1745c700ed531663cc86/coverage.svg)](https://codeclimate.com/repos/54b673f7e30ba0704d01ed1d/feed)
 
@@ -12,15 +12,15 @@ A node module for authentication and use with the BigCommerce v2 API
 To install the module using NPM:
 
 ```
-npm install node-bigcommerce
+npm install bigcommerce
 ```
 
 ## Setup
 
-Include the 'node-bigcommerce' module within your script and instantiate it with a config:
+Include the 'bigcommerce' module within your script and instantiate it with a config:
 
 ```javascript
-var BigCommerce = require('node-bigcommerce');
+var BigCommerce = require('bigcommerce');
 
 var bigCommerce = new BigCommerce({
   logLevel: 'info',
@@ -49,7 +49,7 @@ You will be able to get your Client ID and Secret within your application setup.
 ```javascript
 var express = require('express'),
   router = express.Router(),
-  BigCommerce = require('node-bigcommerce');
+  BigCommerce = require('bigcommerce');
 
 var bigCommerce = new BigCommerce({
   clientId: '128ecf542a35ac5270a87dc740918404',
@@ -90,7 +90,7 @@ The only configuration element required to use the callback method (used for bot
 ```javascript
 var express = require('express'),
   router = express.Router(),
-  BigCommerce = require('node-bigcommerce');
+  BigCommerce = require('bigcommerce');
 
 var bigCommerce = new BigCommerce({
   secret: 'acbd18db4cc2f85cedef654fccc4a4d8'
@@ -144,7 +144,7 @@ var path = '/products?name=' + escape('Plain T-Shirt');
 The 'Get' call requires a path and callback: get(path, callback):
 
 ```javascript
-var BigCommerce = require('node-bigcommerce');
+var BigCommerce = require('bigcommerce');
 
 var bigCommerce = new BigCommerce({
   clientId: '128ecf542a35ac5270a87dc740918404'
@@ -162,7 +162,7 @@ bigCommerce.get('/products', function(err, data, response){
 The 'POST' & 'PUT' calls requires a path and callback with optional data to be sent: post(path, data, callback):
 
 ```javascript
-var BigCommerce = require('node-bigcommerce');
+var BigCommerce = require('bigcommerce');
 
 var bigCommerce = new BigCommerce({
   clientId: '128ecf542a35ac5270a87dc740918404'
@@ -191,7 +191,7 @@ bigCommerce.post('/products', product, function(err, data, response){
 The 'DELETE' call requires a path and callback with optional data to be sent: delete(path, data, callback). A delete call will not return any data and will return a response status of 204.
 
 ```javascript
-var BigCommerce = require('node-bigcommerce');
+var BigCommerce = require('bigcommerce');
 
 var bigCommerce = new BigCommerce({
   clientId: '128ecf542a35ac5270a87dc740918404',
@@ -210,7 +210,7 @@ bigCommerce.post('/products?name=' + escape('Plain T-Shirt'), null, function(err
 There are 2 levels of logging which can be set in the config during instantiation. By default the logging level is set to 'errors'. For more verbose debugging the log level of 'info' can be set:
 
 ```javascript
-var BigCommerce = require('node-bigcommerce');
+var BigCommerce = require('bigcommerce');
 
 var bigCommerce = new BigCommerce({
   logLevel: 'info',
@@ -233,7 +233,7 @@ You can instantiate the BigCommerce object within a script and re-use throughout
 ```javascript
 var express = require('express'),
   router = express.Router(),
-  BigCommerce = require('node-bigcommerce');
+  BigCommerce = require('bigcommerce');
 
 var bigCommerce = new BigCommerce({
   clientId: '128ecf542a35ac5270a87dc740918404',
