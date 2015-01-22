@@ -26,7 +26,8 @@ var bigCommerce = new BigCommerce({
   logLevel: 'info',
   clientId: '128ecf542a35ac5270a87dc740918404',
   secret: 'acbd18db4cc2f85cedef654fccc4a4d8',
-  callback: 'https://myapplication.com/auth'  
+  callback: 'https://myapplication.com/auth',
+  responseType: 'json'
 });
 ```
 
@@ -40,7 +41,8 @@ Set up your Big Commerce as above and pass the following configuration options i
 {
   clientId: 'Your application's client ID',
   secret: 'Your secret',
-  callback: 'The location you want the app to return to on success'
+  callback: 'The location you want the app to return to on success',
+  responseType: 'json'
 }
 ```
 
@@ -54,7 +56,8 @@ var express = require('express'),
 var bigCommerce = new BigCommerce({
   clientId: '128ecf542a35ac5270a87dc740918404',
   secret: 'acbd18db4cc2f85cedef654fccc4a4d8',
-  callback: 'https://myapplication.com/auth'  
+  callback: 'https://myapplication.com/auth',
+  responseType: 'json'
 });
 
 router.get('/auth', function(req, res) {
@@ -93,7 +96,8 @@ var express = require('express'),
   BigCommerce = require('node-bigcommerce');
 
 var bigCommerce = new BigCommerce({
-  secret: 'acbd18db4cc2f85cedef654fccc4a4d8'
+  secret: 'acbd18db4cc2f85cedef654fccc4a4d8',
+  responseType: 'json'
 });
 
 router.get('/load', function(req, res) {
@@ -129,7 +133,8 @@ To make an API Request you will need the following minimum configuration:
 {
   clientId: 'Your application's client ID',
   accessToken: 'Token assigned to the user during authorisation',
-  storeHash: 'The short hash for the store'
+  storeHash: 'The short hash for the store',
+  responseType: 'json'
 }
 ```
 Parameters that are added to the url need to be escaped before they are passed as part of the path of any call:
@@ -148,7 +153,8 @@ var BigCommerce = require('node-bigcommerce');
 
 var bigCommerce = new BigCommerce({
   clientId: '128ecf542a35ac5270a87dc740918404'
-  accessToken: '9df3b01c60df20d13843841ff0d4482c'
+  accessToken: '9df3b01c60df20d13843841ff0d4482c',
+  responseType: 'json'
 });
 
 bigCommerce.get('/products', function(err, data, response){
@@ -166,7 +172,8 @@ var BigCommerce = require('node-bigcommerce');
 
 var bigCommerce = new BigCommerce({
   clientId: '128ecf542a35ac5270a87dc740918404'
-  accessToken: '9df3b01c60df20d13843841ff0d4482c'
+  accessToken: '9df3b01c60df20d13843841ff0d4482c',
+  responseType: 'json'
 });
 
 var product = {
@@ -215,7 +222,8 @@ var BigCommerce = require('node-bigcommerce');
 var bigCommerce = new BigCommerce({
   logLevel: 'info',
   clientId: '128ecf542a35ac5270a87dc740918404',
-  accessToken: '9df3b01c60df20d13843841ff0d4482c'
+  accessToken: '9df3b01c60df20d13843841ff0d4482c',
+  responseType: 'json'
 });
 
 bigCommerce.post('/products?name=' + escape('Plain T-Shirt'), null, function(err, data, response){
@@ -225,6 +233,30 @@ bigCommerce.post('/products?name=' + escape('Plain T-Shirt'), null, function(err
 ``` 
 
 We recommend you only use the log level 'info' on a development build as it logs a lot of information.
+
+## Response Type
+
+You may require the Big Commerce API to return data in a specific format. To return in either JSON or XML just add a 'responseType' to the config:
+
+```javascript
+var BigCommerce = require('node-bigcommerce');
+
+var bigCommerce = new BigCommerce({
+  logLevel: 'info',
+  clientId: '128ecf542a35ac5270a87dc740918404',
+  accessToken: '9df3b01c60df20d13843841ff0d4482c',
+  responseType: 'xml'
+});
+
+bigCommerce.post('/products?name=' + escape('Plain T-Shirt'), null, function(err, data, response){
+  // Catch any errors, data will be null
+  // The response object is passed back for convenience
+});
+``` 
+
+Note that when returning in JSON the data will be parsed into an object, XML will not, and will return a string. When no response type is given the type will resort to whatever the BigCommerce default is. 
+
+Webhooks can only be JSON so when dealing with the '/hooks' endpoint leave the responseType blank (or null).
 
 ## Notes
 
