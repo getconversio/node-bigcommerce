@@ -207,6 +207,55 @@ describe('Helpers: #BigCommerce', function(){
       });
     });
 
+    it('Should make a call to the request object with no extension when no responseType is given', function(done){
+      var config = { accessToken: '123456', clientId: 'abcdef', storeHash: 'abcd/1' },
+        bc = new BigCommerce(config);
+
+      var requestStub = sinon.stub(Request.prototype, 'completeRequest', function(method, path, data, cb){
+        console.log(method, path);
+        path.should.equal('/stores/abcd/1/v2/foo');
+        cb(null, {}, {text: ''});
+      });
+
+      bc.request('get', '/foo', null, function(){
+        requestStub.restore();
+        done();
+      });
+
+    });
+
+    it('Should make a call to the request object with extension .xml when the response type is xml', function(done){
+      var config = { accessToken: '123456', clientId: 'abcdef', storeHash: 'abcd/1', responseType: 'xml'},
+        bc = new BigCommerce(config);
+
+      var requestStub = sinon.stub(Request.prototype, 'completeRequest', function(method, path, data, cb){
+        path.should.equal('/stores/abcd/1/v2/foo.xml');
+        cb(null, {}, {text: ''});
+      });
+
+      bc.request('get', '/foo', null, function(){
+        requestStub.restore();
+        done();
+      });
+
+    });
+
+    it('Should make a call to the request object with extension .json when the response type is json', function(done){
+      var config = { accessToken: '123456', clientId: 'abcdef', storeHash: 'abcd/1', responseType: 'json' },
+        bc = new BigCommerce(config);
+
+      var requestStub = sinon.stub(Request.prototype, 'completeRequest', function(method, path, data, cb){
+        path.should.equal('/stores/abcd/1/v2/foo.json');
+        cb(null, {}, {text: ''});
+      });
+
+      bc.request('get', '/foo', null, function(){
+        requestStub.restore();
+        done();
+      });
+
+    });
+
     it('Should make a call to the request object when requirements are met', function(done){
       var config = { accessToken: '123456', clientId: 'abcdef', storeHash: 'abcd/1' },
         bc = new BigCommerce(config);
@@ -425,6 +474,9 @@ describe('Request: #BigCommerce', function(){
 
   it('Should return an error the request JSON is malformed', function(done){
     var api = nock('https://api.bigcommerce.com')
+      .defaultReplyHeaders({
+        'content-type': 'application/json'
+      })
       .post('/orders', {})
       .reply(200, '<malformed>');
 
@@ -432,6 +484,22 @@ describe('Request: #BigCommerce', function(){
     request.completeRequest('post', '/orders', {}, function(err, data, res){
       err.should.not.be.null;
       err.message.should.equal('Unexpected token <');
+      done();
+    });
+  });
+
+  it('Should return the raw response if json is not returned', function(done){
+    var api = nock('https://api.bigcommerce.com')
+      .defaultReplyHeaders({
+        'content-type': 'application/xml'
+      })
+      .post('/orders', {})
+      .reply(200, '<xml></xml>');
+
+    var request = new Request('api.bigcommerce.com');
+    request.completeRequest('post', '/orders', {}, function(err, data, res){
+      should.not.exist(err);
+      data.should.be.a.string;
       done();
     });
   });
