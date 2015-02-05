@@ -205,8 +205,7 @@ var bigCommerce = new BigCommerce({
   accessToken: '9df3b01c60df20d13843841ff0d4482c'
 });
 
-// Replace 'post' with 'put' for a put call
-bigCommerce.post('/products?name=' + escape('Plain T-Shirt'), null, function(err, data, response){
+bigCommerce.delete('/products/' + productId, null, function(err, data, response){
   // Catch any errors, data will be null
   // The response object is passed back for convenience
 });
