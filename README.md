@@ -2,7 +2,7 @@
 
 [![Code Climate](https://codeclimate.com/repos/54b673f7e30ba0704d01ed1d/badges/1745c700ed531663cc86/gpa.svg)](https://codeclimate.com/repos/54b673f7e30ba0704d01ed1d/feed) [![Test Coverage](https://codeclimate.com/repos/54b673f7e30ba0704d01ed1d/badges/1745c700ed531663cc86/coverage.svg)](https://codeclimate.com/repos/54b673f7e30ba0704d01ed1d/feed)
 
-[ ![Codeship Status for Receiptful/node-bigcommerce](https://codeship.com/projects/8896a5b0-7e22-0132-e07d-6e7a890cdaa4/status?branch=master)](https://codeship.com/projects/56889)
+[![Build Status](https://travis-ci.org/Receiptful/node-bigcommerce.svg?branch=master)](https://travis-ci.org/Receiptful/node-bigcommerce) [![bitHound Overall Score](https://www.bithound.io/github/Receiptful/node-bigcommerce/badges/score.svg)](https://www.bithound.io/github/Receiptful/node-bigcommerce) [![bitHound Dependencies](https://www.bithound.io/github/Receiptful/node-bigcommerce/badges/dependencies.svg)](https://www.bithound.io/github/Receiptful/node-bigcommerce/master/dependencies/npm) [![bitHound Dev Dependencies](https://www.bithound.io/github/Receiptful/node-bigcommerce/badges/devDependencies.svg)](https://www.bithound.io/github/Receiptful/node-bigcommerce/master/dependencies/npm) [![bitHound Code](https://www.bithound.io/github/Receiptful/node-bigcommerce/badges/code.svg)](https://www.bithound.io/github/Receiptful/node-bigcommerce)
 
 A node module for authentication and use with the BigCommerce v2 API
 
@@ -72,15 +72,15 @@ The 'authorise' method requires the query parameters from the request to be pass
 An example data object:
 
 ```
-{ 
+{
   access_token: '9df3b01c60df20d13843841ff0d4482c',
   scope: 'store_v2_orders_read_only store_v2_products_read_only users_basic_information store_v2_default',
-  user: { 
+  user: {
     id: 12345,
     username: 'John Smith',
-    email: 'john@success.com' 
+    email: 'john@success.com'
   },
-  context: 'stores/x43tqo' 
+  context: 'stores/x43tqo'
 }
 ```
 
@@ -110,14 +110,14 @@ router.get('/load', function(req, res) {
 The 'callback' method requires the 'signed_payload' query parameter to be passed from the request. This is used to verify that the request has come from Big Commerce. The callback method returns the following object:
 
 ```
-{ 
-  user: { 
-    id: 12345, 
-    email: 'john@success.com' 
+{
+  user: {
+    id: 12345,
+    email: 'john@success.com'
   },
   context: 'stores/x43tqo',
   store_hash: 'x43tqo',
-  timestamp: 1421748597.4395974 
+  timestamp: 1421748597.4395974
 }
 ```
 
@@ -229,7 +229,7 @@ bigCommerce.post('/products?name=' + escape('Plain T-Shirt'), null, function(err
   // Catch any errors, data will be null
   // The response object is passed back for convenience
 });
-``` 
+```
 
 We recommend you only use the log level 'info' on a development build as it logs a lot of information.
 
@@ -251,9 +251,9 @@ bigCommerce.post('/products?name=' + escape('Plain T-Shirt'), null, function(err
   // Catch any errors, data will be null
   // The response object is passed back for convenience
 });
-``` 
+```
 
-Note that when returning in JSON the data will be parsed into an object, XML will not, and will return a string. When no response type is given the type will resort to whatever the BigCommerce default is. 
+Note that when returning in JSON the data will be parsed into an object, XML will not, and will return a string. When no response type is given the type will resort to whatever the BigCommerce default is.
 
 Webhooks can only be JSON so when dealing with the '/hooks' endpoint leave the responseType blank (or null).
 
@@ -269,14 +269,14 @@ var express = require('express'),
 var bigCommerce = new BigCommerce({
   clientId: '128ecf542a35ac5270a87dc740918404',
   secret: 'acbd18db4cc2f85cedef654fccc4a4d8',
-  callback: 'https://myapplication.com/auth'  
+  callback: 'https://myapplication.com/auth'
 });
 
 router.get('/auth', function(req, res) {
   bigCommerce.authorise(req.query, function(err, data){
-    
+
     /**
-     * Your code to save the access token & 
+     * Your code to save the access token &
      * store hash to the current user
      */
 
@@ -285,7 +285,7 @@ router.get('/auth', function(req, res) {
 });
 
 router.get('/products', function(req, res) {
-  
+
   /**
    * Your code to get the current users access token & store hash
    * and add it to the variables: var accessToken & var storeHash

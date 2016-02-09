@@ -4,7 +4,11 @@
   "description": "A node module for authentication and use with the BigCommerce API",
   "main": "./lib/bigcommerce",
   "scripts": {
-    "test": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha"
+    "exectests": "node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha",
+    "jshint": "node_modules/.bin/jshint lib",
+    "jscs": "node_modules/.bin/jscs lib",
+    "lint": "npm run jshint && npm run jscs",
+    "test": "npm run exectests && npm run lint"
   },
   "repository": {
     "type": "git",
@@ -28,12 +32,13 @@
   },
   "homepage": "https://github.com/Receiptful/node-bigcommerce",
   "devDependencies": {
-    "chai": "^1.10.0",
-    "codeclimate-test-reporter": "0.0.4",
-    "istanbul": "^0.3.5",
-    "mocha": "^2.1.0",
-    "nock": "^0.57.0",
-    "sinon": "^1.12.2"
+    "chai": "^3.5.0",
+    "istanbul": "^0.4.2",
+    "jscs": "^2.9.0",
+    "jshint": "^2.9.1",
+    "mocha": "^2.4.5",
+    "nock": "^7.0.2",
+    "sinon": "^1.17.3"
   },
   "dependencies": {}
 }

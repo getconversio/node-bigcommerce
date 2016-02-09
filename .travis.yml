@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+- '5'
+- '4'
+deploy:
+  provider: npm
+  email: stefano+npm@sala.io
+  api_key:
+    secure: ryXJS7POrCLfDkC9OdTb4A3KqEm0Ng+ae9obV1bk9beeZ84qQuF4+JeZ1tXYDmq/X2iDvZWfnW/7Y2LglvBdcksIZvuOjciQrlyb6zOAunpRXl5X/UVR1dVguGft769dSc+Jc/xlSer7ChVFMdAE+cNDJMEslCutpGLtrZ5R5ho=
+  on:
+    tags: true
+    repo: Receiptful/node-bigcommerce
+notifications:
+  slack:
+    secure: mt+4KFVI5yqjkJWOgTAVUjQqafUt24KigFbWu6HgKCfsJJ+PHhYkCqhrVBbuE7anEjDgZPx2JqUgM/mLBPHbfOgI841uZV0aV57Jlx19azDDeN7SGT02AV4W8CjVop6YL4nAad/tEpKy/dpnoBLdpRiYi1PnK6afijMo/eqWS80=
