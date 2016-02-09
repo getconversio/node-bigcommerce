@@ -1,0 +1,18 @@
+{
+    "preset": "airbnb",
+    "disallowMultipleVarDecl": {
+        "allExcept": ["require"]
+    },
+    "maxErrors": "Infinity",
+    "requireTrailingComma": null,
+    "requirePaddingNewLinesAfterBlocks": null,
+    "requirePaddingNewLinesBeforeLineComments": null,
+    "requireSpacesInsideObjectBrackets": "all",
+    "disallowSpacesInFunctionExpression": {
+        "beforeOpeningRoundBrace": true
+    },
+    "disallowSpacesInAnonymousFunctionExpression": {
+        "beforeOpeningRoundBrace": true
+    },
+    "requireSpacesInAnonymousFunctionExpression": null
+}
