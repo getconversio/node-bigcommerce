@@ -1,6 +1,6 @@
 {
   "name": "node-bigcommerce",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "description": "A node module for authentication and use with the BigCommerce API",
   "main": "./lib/bigcommerce",
   "scripts": {
@@ -24,7 +24,7 @@
     "node",
     "npm"
   ],
-  "author": "Rick Craig <rick@receiptful.com> (http://receiptful.com)",
+  "author": "Rick Craig <rick@receiptful.com> (https://receiptful.com)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Receiptful/node-bigcommerce/issues",
