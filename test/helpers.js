@@ -1,6 +1,7 @@
 'use strict';
 
-var helpers = require('../lib/helpers'),
+var reload = require('require-reload')(require),
+  helpers = require('../lib/helpers'),
   logger = require('../lib/logger'),
   should = require('chai').should(),
   sinon = require('sinon');
@@ -26,6 +27,21 @@ describe('Helpers', function() {
         .catch(function(err) {
           err.message.should.equal('oh no');
           done();
+        });
+    });
+
+    it('should work when there is no global promise', function() {
+      var oldPromise = global.Promise;
+      global.Promise = undefined;
+
+      helpers = reload('../lib/helpers');
+
+      var deferred = helpers.defer();
+      deferred.resolve(123);
+      return deferred.promise
+        .then(function(result) {
+          result.should.equal(123);
+          global.Promise = oldPromise;
         });
     });
   });
