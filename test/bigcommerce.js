@@ -14,6 +14,15 @@ describe('BigCommerce', function() {
     storeHash: '12abc'
   });
 
+  var sandbox;
+  beforeEach(function() {
+    sandbox = sinon.sandbox.create();
+  });
+
+  afterEach(function() {
+    sandbox.restore();
+  });
+
   describe('#constructor', function() {
     it('should return an error if config is missing', function() {
       should.Throw(function() {
@@ -84,7 +93,7 @@ describe('BigCommerce', function() {
     });
   });
 
-  describe('#authorize', function() {
+  describe('#authorise', function() {
     var query = { code: '', scope: '', context: '' };
 
     context('when the query params are missing', function() {
@@ -98,7 +107,7 @@ describe('BigCommerce', function() {
 
     context('when the authorisation fails', function() {
       it('should return and error', function(done) {
-        var requestStub = sinon.stub(
+        var requestStub = sandbox.stub(
           Request.prototype,
           'completeRequest',
           function(method, path, data, cb) {
@@ -116,7 +125,7 @@ describe('BigCommerce', function() {
     });
 
     it('should return an object', function(done) {
-      var requestStub = sinon.stub(
+      var requestStub = sandbox.stub(
         Request.prototype,
         'completeRequest',
         function(method, path, data, cb) {
@@ -125,6 +134,23 @@ describe('BigCommerce', function() {
       );
 
       bc.authorise(query, function(err, data) {
+        should.not.exist(err);
+        data.should.not.be.null;
+        requestStub.restore();
+        done();
+      });
+    });
+
+    it('should work for its naming alias "authorize"', function(done) {
+      var requestStub = sandbox.stub(
+        Request.prototype,
+        'completeRequest',
+        function(method, path, data, cb) {
+          cb(null, {}, { text: '' });
+        }
+      );
+
+      bc.authorize(query, function(err, data) {
         should.not.exist(err);
         data.should.not.be.null;
         requestStub.restore();
@@ -188,7 +214,7 @@ describe('BigCommerce', function() {
 
     context('when no responseType is given', function() {
       it('should call the request object with no extension', function(done) {
-        var requestStub = sinon.stub(
+        var requestStub = sandbox.stub(
           Request.prototype,
           'completeRequest',
           function(method, path, data, cb) {
@@ -213,7 +239,7 @@ describe('BigCommerce', function() {
       });
 
       it('should call the request object with extension .xml', function(done) {
-        var requestStub = sinon.stub(
+        var requestStub = sandbox.stub(
           Request.prototype,
           'completeRequest',
           function(method, path, data, cb) {
@@ -238,7 +264,7 @@ describe('BigCommerce', function() {
       });
 
       it('should make a call to the request object with extension .json', function(done) {
-        var requestStub = sinon.stub(
+        var requestStub = sandbox.stub(
           Request.prototype,
           'completeRequest',
           function(method, path, data, cb) {
@@ -255,7 +281,7 @@ describe('BigCommerce', function() {
     });
 
     it('should make a call to the request object', function(done) {
-      var requestStub = sinon.stub(
+      var requestStub = sandbox.stub(
         Request.prototype,
         'completeRequest',
         function(method, path, data, cb) {
@@ -273,7 +299,7 @@ describe('BigCommerce', function() {
 
   describe('#get', function() {
     it('should make a request with the correct arguments', function(done) {
-      var requestStub = sinon.stub(
+      var requestStub = sandbox.stub(
         BigCommerce.prototype,
         'request',
         function(type, path, data, cb) {
@@ -293,7 +319,7 @@ describe('BigCommerce', function() {
 
   describe('#post', function() {
     it('should make a request with the correct arguments', function(done) {
-      var requestStub = sinon.stub(
+      var requestStub = sandbox.stub(
         BigCommerce.prototype,
         'request',
         function(type, path, data, cb) {
@@ -313,7 +339,7 @@ describe('BigCommerce', function() {
 
   describe('#put', function() {
     it('should make a request with the correct arguments', function(done) {
-      var requestStub = sinon.stub(
+      var requestStub = sandbox.stub(
         BigCommerce.prototype,
         'request',
         function(type, path, data, cb) {
@@ -333,7 +359,7 @@ describe('BigCommerce', function() {
 
   describe('#delete', function() {
     it('should make a request with the correct arguments', function(done) {
-      var requestStub = sinon.stub(
+      var requestStub = sandbox.stub(
         BigCommerce.prototype,
         'request',
         function(type, path, data, cb) {
