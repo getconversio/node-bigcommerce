@@ -3,7 +3,9 @@
 var BigCommerce = require('../lib/bigcommerce'),
   Request = require('../lib/request'),
   should = require('chai').should(),
-  sinon = require('sinon');
+  expect = require('chai').expect,
+  sinon = require('sinon'),
+  nock = require('nock');
 
 describe('BigCommerce', function() {
   var bc = new BigCommerce({
@@ -134,21 +136,6 @@ describe('BigCommerce', function() {
   });
 
   describe('#checkRequirements', function() {
-    context('given a missing access token or store hash', function() {
-      it('should return an error', function(done) {
-        new BigCommerce({ }).checkRequirements(function(err) {
-          err.should.not.be.null;
-          done();
-        });
-      });
-    });
-
-    it('should not return an error', function(done) {
-      bc.checkRequirements(function(err) {
-        should.not.exist(err);
-        done();
-      });
-    });
   });
 
   describe('#createAPIRequest', function() {
@@ -183,6 +170,17 @@ describe('BigCommerce', function() {
           err.should.not.be.null;
           done();
         });
+      });
+
+      it('should reject with an error', function(done) {
+        new BigCommerce({ }).request('get', '/foo', null)
+          .then(function() {
+            done(new Error('Should not resolve'));
+          })
+          .catch(function(err) {
+            err.should.not.be.null;
+            done();
+          });
       });
     });
 
@@ -289,6 +287,34 @@ describe('BigCommerce', function() {
         done();
       });
     });
+
+    it('should resolve a promise with the data', function() {
+      var fooNock = nock('https://api.bigcommerce.com')
+        .get('/stores/12abc/v2/foo')
+        .reply(200, { some: 'data' });
+
+      return bc.get('/foo')
+        .then(function(data) {
+          fooNock.done();
+          data.should.deep.equal({ some: 'data' });
+        });
+    });
+
+    it('should reject a promise with an error', function(done) {
+      var fooNock = nock('https://api.bigcommerce.com')
+        .get('/stores/12abc/v2/foo')
+        .reply(400, {});
+
+      bc.get('/foo')
+        .then(function() {
+          done(new Error('Should not resolve'));
+        })
+        .catch(function(err) {
+          err.code.should.equal(400);
+          err.should.be.a('error');
+          done();
+        });
+    });
   });
 
   describe('#post', function() {
@@ -308,6 +334,18 @@ describe('BigCommerce', function() {
         requestStub.restore();
         done();
       });
+    });
+
+    it('should resolve a promise with the data', function() {
+      var fooNock = nock('https://api.bigcommerce.com')
+        .post('/stores/12abc/v2/foo')
+        .reply(200, { some: 'data' });
+
+      return bc.post('/foo')
+        .then(function(data) {
+          fooNock.done();
+          data.should.deep.equal({ some: 'data' });
+        });
     });
   });
 
@@ -329,6 +367,18 @@ describe('BigCommerce', function() {
         done();
       });
     });
+
+    it('should resolve a promise with the data', function() {
+      var fooNock = nock('https://api.bigcommerce.com')
+        .put('/stores/12abc/v2/foo')
+        .reply(200, { some: 'data' });
+
+      return bc.put('/foo')
+        .then(function(data) {
+          fooNock.done();
+          data.should.deep.equal({ some: 'data' });
+        });
+    });
   });
 
   describe('#delete', function() {
@@ -348,6 +398,18 @@ describe('BigCommerce', function() {
         requestStub.restore();
         done();
       });
+    });
+
+    it('should resolve a promise with the data', function() {
+      var fooNock = nock('https://api.bigcommerce.com')
+        .delete('/stores/12abc/v2/foo')
+        .reply(200, { some: 'data' });
+
+      return bc.delete('/foo')
+        .then(function(data) {
+          fooNock.done();
+          data.should.deep.equal({ some: 'data' });
+        });
     });
   });
 });

@@ -177,4 +177,32 @@ describe('Request', function() {
       done();
     });
   });
+
+  describe('Promises', function() {
+    it('Should promise to return a JSON object', function() {
+      nock('https://api.bigcommerce.com')
+        .post('/orders', {})
+        .reply(200, { order:true });
+
+      return request.completeRequest('post', '/orders', {})
+        .then(function(data) {
+          data.should.deep.equal({ order: true });
+        });
+    });
+
+    it('Should reject on error', function(done) {
+      nock('https://api.bigcommerce.com')
+        .post('/orders', {})
+        .reply(400, {});
+
+      request.completeRequest('post', '/orders', {})
+        .then(function() {
+          done(new Error('Should not resolve'));
+        })
+        .catch(function(err) {
+          err.code.should.equal(400);
+          done();
+        });
+    });
+  });
 });
