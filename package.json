@@ -38,6 +38,7 @@
     "jshint": "^2.9.1",
     "mocha": "^2.4.5",
     "nock": "^7.0.2",
+    "require-reload": "^0.2.2",
     "sinon": "^1.17.3"
   },
   "dependencies": {
