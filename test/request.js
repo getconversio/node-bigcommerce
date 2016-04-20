@@ -2,8 +2,10 @@
 
 var Request = require('../lib/request'),
   should = require('chai').should(),
+  expect = require('chai').expect,
   nock = require('nock'),
-  sinon = require('sinon');
+  sinon = require('sinon'),
+  version = require('../package.json').version;
 
 describe('Request', function() {
   var request = new Request(
@@ -153,6 +155,25 @@ describe('Request', function() {
     request.completeRequest('post', '/orders', {}, function(err, data) {
       should.not.exist(err);
       data.should.be.a('object');
+      done();
+    });
+  });
+
+  it('Should use the package version for the user agent', function(done) {
+    // Check that the version is non-empty just to be safe :-)
+    expect(version).to.be.a('string');
+    expect(version).to.have.length.above(3);
+
+    var storeCall = nock('https://api.bigcommerce.com', {
+        reqheaders: {
+          'User-Agent': 'node-bigcommerce/' + version
+        }
+      })
+      .get('/store', {})
+      .reply(200, {});
+
+    request.completeRequest('get', '/store', {}, function(err, data) {
+      storeCall.done();
       done();
     });
   });
