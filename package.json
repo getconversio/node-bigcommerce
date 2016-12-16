@@ -12,25 +12,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Receiptful/node-bigcommerce.git"
+    "url": "https://github.com/getconversio/node-bigcommerce.git"
   },
   "keywords": [
     "bigcommerce",
     "oauth2.0",
     "oauth",
-    "receiptful",
+    "conversio",
     "api",
     "ecommerce",
     "node",
     "npm"
   ],
-  "author": "Rick Craig <rick@receiptful.com> (https://receiptful.com)",
+  "author": "Rick Craig <rick@conversio.com> (https://conversio.com)",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Receiptful/node-bigcommerce/issues",
-    "email": "rick@receiptful.com"
-  },
-  "homepage": "https://github.com/Receiptful/node-bigcommerce",
+  "bugs": "https://github.com/getconversio/node-bigcommerce/issues",
+  "homepage": "https://github.com/getconversio/node-bigcommerce",
   "devDependencies": {
     "chai": "^3.5.0",
     "istanbul": "^0.4.2",
