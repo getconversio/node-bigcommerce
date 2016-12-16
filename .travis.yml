@@ -14,4 +14,4 @@ deploy:
     repo: getconversio/node-bigcommerce
 notifications:
   slack:
-    secure: mt+4KFVI5yqjkJWOgTAVUjQqafUt24KigFbWu6HgKCfsJJ+PHhYkCqhrVBbuE7anEjDgZPx2JqUgM/mLBPHbfOgI841uZV0aV57Jlx19azDDeN7SGT02AV4W8CjVop6YL4nAad/tEpKy/dpnoBLdpRiYi1PnK6afijMo/eqWS80=
+    secure: fyAnH2j56FTfYCRCxhzDpuXKoBJ4DCNMPj7yCsCEr5gvQMl83Quzm+S6Kb+ORxxbvue9PpV0hyAmJlfRmNvYwj6Om0BneEKzKEj3/Useq8jMBzVDroe13s0nOIaAAHXYAfqJdgxNnzhep38WzIiFzS7StufGyYuxpka5ca6RCFQ=
