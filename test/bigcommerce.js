@@ -293,6 +293,22 @@ describe('BigCommerce', function() {
         done();
       });
     });
+
+    it('should use v3 for catalog requests', function(done) {
+      var requestStub = sandbox.stub(
+        Request.prototype,
+        'completeRequest',
+        function(method, path, data, cb) {
+          path.should.equal('/stores/12abc/v3/catalog');
+          cb(null, {}, { text: '' });
+        }
+      );
+
+      bc.request('get', '/catalog', null, function() {
+        requestStub.restore();
+        done();
+      });
+    });
   });
 
   describe('#get', function() {
