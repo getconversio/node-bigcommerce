@@ -122,7 +122,7 @@ describe('Request', function() {
     it('should return an error the ', function(done) {
       request.completeRequest('post', '/orders', {}, function(err) {
         err.should.not.be.null;
-        err.message.should.equal('Unexpected token <');
+        err.message.should.include('Unexpected token <');
         done();
       });
     });
