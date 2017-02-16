@@ -1,6 +1,6 @@
 {
   "name": "node-bigcommerce",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "A node module for authentication and use with the BigCommerce API",
   "main": "./lib/bigcommerce",
   "scripts": {
