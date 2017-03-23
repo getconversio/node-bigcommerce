@@ -2,7 +2,7 @@
 
 [![Code Climate](https://codeclimate.com/repos/54b673f7e30ba0704d01ed1d/badges/1745c700ed531663cc86/gpa.svg)](https://codeclimate.com/repos/54b673f7e30ba0704d01ed1d/feed) [![Test Coverage](https://codeclimate.com/repos/54b673f7e30ba0704d01ed1d/badges/1745c700ed531663cc86/coverage.svg)](https://codeclimate.com/repos/54b673f7e30ba0704d01ed1d/feed)
 
-[![Build Status](https://travis-ci.org/Receiptful/node-bigcommerce.svg?branch=master)](https://travis-ci.org/Receiptful/node-bigcommerce) [![bitHound Overall Score](https://www.bithound.io/github/Receiptful/node-bigcommerce/badges/score.svg)](https://www.bithound.io/github/Receiptful/node-bigcommerce) [![bitHound Dependencies](https://www.bithound.io/github/Receiptful/node-bigcommerce/badges/dependencies.svg)](https://www.bithound.io/github/Receiptful/node-bigcommerce/master/dependencies/npm) [![bitHound Dev Dependencies](https://www.bithound.io/github/Receiptful/node-bigcommerce/badges/devDependencies.svg)](https://www.bithound.io/github/Receiptful/node-bigcommerce/master/dependencies/npm) [![bitHound Code](https://www.bithound.io/github/Receiptful/node-bigcommerce/badges/code.svg)](https://www.bithound.io/github/Receiptful/node-bigcommerce)
+[![Build Status](https://travis-ci.org/getconversio/node-bigcommerce.svg?branch=master)](https://travis-ci.org/getconversio/node-bigcommerce) [![bitHound Overall Score](https://www.bithound.io/github/getconversio/node-bigcommerce/badges/score.svg)](https://www.bithound.io/github/getconversio/node-bigcommerce) [![bitHound Dependencies](https://www.bithound.io/github/getconversio/node-bigcommerce/badges/dependencies.svg)](https://www.bithound.io/github/getconversio/node-bigcommerce/master/dependencies/npm) [![bitHound Dev Dependencies](https://www.bithound.io/github/getconversio/node-bigcommerce/badges/devDependencies.svg)](https://www.bithound.io/github/getconversio/node-bigcommerce/master/dependencies/npm) [![bitHound Code](https://www.bithound.io/github/getconversio/node-bigcommerce/badges/code.svg)](https://www.bithound.io/github/getconversio/node-bigcommerce)
 
 A node module for authentication and use with the BigCommerce v2 API
 
@@ -307,6 +307,6 @@ npm test
 
 ## Contributing
 
-This module was originally written to be used with [Receiptful](https://receiptful.com) and is used in a production environment currently. This will ensure that this module is well maintained, bug free and as up to date as possible.
+This module was originally written to be used with [Conversio](https://conversio.com) and is used in a production environment currently. This will ensure that this module is well maintained, bug free and as up to date as possible.
 
-Receiptful's developers will continue to make updates as often as required to have a consistently bug free platform, but we are happy to review any feature requests or issues and are accepting constructive pull requests.
+Conversio's developers will continue to make updates as often as required to have a consistently bug free platform, but we are happy to review any feature requests or issues and are accepting constructive pull requests.
