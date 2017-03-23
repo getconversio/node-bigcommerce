@@ -261,12 +261,12 @@ describe('BigCommerce', function() {
         responseType: 'json'
       });
 
-      it('should make a call to the request object with extension .json', function(done) {
+      it('should make a call to the request object with an empty extension', function(done) {
         var requestStub = sandbox.stub(
           Request.prototype,
           'completeRequest',
           function(method, path, data, cb) {
-            path.should.equal('/stores/abcd/1/v2/foo.json');
+            path.should.equal('/stores/abcd/1/v2/foo');
             cb(null, {}, { text: '' });
           }
         );
