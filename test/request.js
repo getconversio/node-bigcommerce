@@ -147,6 +147,25 @@ describe('Request', function() {
     });
   });
 
+  context('timeout', function() {
+    beforeEach(function() {
+      nock('https://api.bigcommerce.com')
+        .defaultReplyHeaders({
+          'content-type': 'application/json'
+        })
+        .post('/orders', {})
+        .replyWithError('ECONNRESET');
+    });
+
+    it('should return an error', function(done) {
+      request.completeRequest('post', '/orders', {}, function(err) {
+        err.should.not.be.null;
+        err.message.should.include('ECONNRESET');
+        done();
+      });
+    });
+  });
+
   it('Should return a JSON object on success', function(done) {
     nock('https://api.bigcommerce.com')
       .post('/orders', {})
