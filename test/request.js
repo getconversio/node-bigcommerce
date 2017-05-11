@@ -46,19 +46,26 @@ describe('Request', function() {
     });
 
     context('given a failOnLimitReached option', function() {
-      it('should return an error', function(done) {
-        var failRequest = new Request(
-          'api.bigcommerce.com',
-          { 'Content-Type': 'application/json' },
-          0,
-          true
-        );
+      var failRequest = new Request(
+        'api.bigcommerce.com',
+        { 'Content-Type': 'application/json' },
+        0,
+        true
+      );
 
+      it('should return an error', function(done) {
         failRequest.completeRequest('post', '/orders', {}, function(err) {
           err.should.not.be.null;
           done();
         });
       });
+
+      it('includes the retryAfter delay in the error', function(done) {
+        failRequest.completeRequest('post', '/orders', {}, function(err) {
+          err.retryAfter.should.equal(0.1);
+          done();
+        });
+      })
     });
   });
 
