@@ -5,7 +5,8 @@ var Request = require('../lib/request'),
   expect = require('chai').expect,
   nock = require('nock'),
   sinon = require('sinon'),
-  version = require('../package.json').version;
+  version = require('../package.json').version,
+  HttpsAgent = require('agentkeepalive').HttpsAgent;
 
 describe('Request', function() {
   var request = new Request(
@@ -170,6 +171,25 @@ describe('Request', function() {
         err.message.should.include('ECONNRESET');
         done();
       });
+    });
+  });
+
+  it('Should attach a keep-alive HTTPS agent', function(done) {
+    nock('https://api.bigcommerce.com')
+      .post('/orders', {})
+      .reply(200, { order: true });
+
+    request.agent = new HttpsAgent({
+      maxSockets: 30,
+      maxFreeSockets: 30,
+      timeout: 60000,
+      keepAliveTimeout: 30000
+    });
+
+    request.completeRequest('post', '/orders', {}, function(err, data) {
+      should.not.exist(err);
+      data.should.be.a('object');
+      done();
     });
   });
 
