@@ -27,7 +27,8 @@ var bigCommerce = new BigCommerce({
   clientId: '128ecf542a35ac5270a87dc740918404',
   secret: 'acbd18db4cc2f85cedef654fccc4a4d8',
   callback: 'https://myapplication.com/auth',
-  responseType: 'json'
+  responseType: 'json',
+  apiVersion: 'v3' // Default is v2
 });
 ```
 

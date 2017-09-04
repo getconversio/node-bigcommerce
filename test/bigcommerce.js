@@ -33,11 +33,17 @@ describe('BigCommerce', function() {
     });
 
     it('should save config to the object', function() {
-      new BigCommerce({ test: true }).config.should.not.be.null;
+      var newBc = new BigCommerce({ test: true });
+      newBc.config.should.not.be.null;
+      newBc.apiVersion.should.equal('v2');
     });
 
     it('should set the logger to the correct level', function() {
       new BigCommerce({ logLevel: 'info' }).logger.level.should.equal(1);
+    });
+
+    it('should set api version to a default', function() {
+      new BigCommerce({ apiVersion: 'v3' }).apiVersion.should.equal('v3');
     });
   });
 
@@ -294,7 +300,7 @@ describe('BigCommerce', function() {
       });
     });
 
-    it('should use v3 for catalog requests', function(done) {
+    it('should use v3 for catalog requests (LEGACY)', function(done) {
       var requestStub = sandbox.stub(
         Request.prototype,
         'completeRequest',
@@ -305,6 +311,31 @@ describe('BigCommerce', function() {
       );
 
       bc.request('get', '/catalog', null, function() {
+        requestStub.restore();
+        done();
+      });
+    });
+
+    it('should use v3 if specified in config', function(done) {
+      var requestStub = sandbox.stub(
+        Request.prototype,
+        'completeRequest',
+        function(method, path, data, cb) {
+          path.should.equal('/stores/12abc/v3/themes');
+          cb(null, {}, { text: '' });
+        }
+      );
+
+      var bcV3 = new BigCommerce({
+        secret: '123456abcdef',
+        clientId: '123456abcdef',
+        callback: 'http://foo.com',
+        accessToken: '123456',
+        storeHash: '12abc',
+        apiVersion: 'v3'
+      });
+
+      bcV3.request('get', '/themes', null, function() {
         requestStub.restore();
         done();
       });
