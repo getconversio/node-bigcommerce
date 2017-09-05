@@ -5,9 +5,10 @@ node_js:
 - '8'
 deploy:
   provider: npm
-  email: stefano+npm@sala.io
+  email:
+    secure: dsBGPXl1VvR70rJ/UnRuaLwiesvmfxOSeWfuLOlWHU3+2uUA7xLOOIyjHxP3mlz9OLsL3A/tMsYBMj6bM3SrtvbtBwnAQZ+RKWjyIsiBTHYaIrXuJP+kbQIguaDTo8rC45U2VwZRQu50cc2Mln3jeGzlho4iPdZLe4rdRLnbAD0=
   api_key:
-    secure: ryXJS7POrCLfDkC9OdTb4A3KqEm0Ng+ae9obV1bk9beeZ84qQuF4+JeZ1tXYDmq/X2iDvZWfnW/7Y2LglvBdcksIZvuOjciQrlyb6zOAunpRXl5X/UVR1dVguGft769dSc+Jc/xlSer7ChVFMdAE+cNDJMEslCutpGLtrZ5R5ho=
+    secure: o0vLZpRdqWyu1Ez/x7Nug57uMOUahxpsKkEKNVk0AjIMPyc4lw1HaK9WRV0lm9F3R6kzBwxiUnfwvrcnmaEZRgnhcSF4WmqHtHB3u/lbNXTrJOWRnyjIESlA9IuIijbPZNKoRFac2DP3nHDcELKpGp0LeIFNZs47WvBM7dnDtdI=
   on:
     tags: true
     repo: getconversio/node-bigcommerce
