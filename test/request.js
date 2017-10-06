@@ -172,6 +172,16 @@ describe('Request', function() {
         done();
       });
     });
+
+    it('should return a promise based error', function(done) {
+      request.completeRequest('post', '/orders', {})
+        .then(function(res) {
+          return done(new Error('Should not complete'));
+        })
+        .catch(function(err) {
+          return done();
+        });
+    });
   });
 
   it('Should attach a keep-alive HTTPS agent', function(done) {
