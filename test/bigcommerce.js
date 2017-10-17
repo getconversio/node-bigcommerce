@@ -1,14 +1,14 @@
 'use strict';
 
-var BigCommerce = require('../lib/bigcommerce'),
+const BigCommerce = require('../lib/bigcommerce'),
   Request = require('../lib/request'),
   should = require('chai').should(),
-  expect = require('chai').expect,
-  sinon = require('sinon'),
-  nock = require('nock');
+  sinon = require('sinon');
 
-describe('BigCommerce', function() {
-  var bc = new BigCommerce({
+describe('BigCommerce', () => {
+  const self = { };
+
+  const bc = new BigCommerce({
     secret: '123456abcdef',
     clientId: '123456abcdef',
     callback: 'http://foo.com',
@@ -16,61 +16,70 @@ describe('BigCommerce', function() {
     storeHash: '12abc'
   });
 
-  var sandbox;
-  beforeEach(function() {
-    sandbox = sinon.sandbox.create();
-  });
+  beforeEach(() => self.sandbox = sinon.sandbox.create());
+  afterEach(() => self.sandbox.restore());
 
-  afterEach(function() {
-    sandbox.restore();
-  });
-
-  describe('#constructor', function() {
-    it('should return an error if config is missing', function() {
-      should.Throw(function() {
+  describe('#constructor', () => {
+    it('should return an error if config is missing', () => {
+      /* eslint no-new: off */
+      should.Throw(() => {
         new BigCommerce();
       }, Error);
     });
 
-    it('should save config to the object', function() {
-      var newBc = new BigCommerce({ test: true });
-      newBc.config.should.not.be.null;
+    it('should save config to the object', () => {
+      const newBc = new BigCommerce({ test: true });
+      newBc.config.should.be.a('object');
       newBc.apiVersion.should.equal('v2');
     });
 
-    it('should set the logger to the correct level', function() {
-      new BigCommerce({ logLevel: 'info' }).logger.level.should.equal(1);
-    });
-
-    it('should set api version to a default', function() {
+    it('should set api version to a default', () => {
       new BigCommerce({ apiVersion: 'v3' }).apiVersion.should.equal('v3');
     });
   });
 
-  describe('#verify', function() {
-    context('given a null signed request', function() {
-      it('should return null', function() {
-        var verify = bc.verify();
-        should.not.exist(verify);
+  describe('#verify', () => {
+    context('given a null signed request', () => {
+      it('should return null', () => {
+        try {
+          bc.verify();
+        } catch (e) {
+          e.message.should.match(/signed request is required/);
+          return;
+        }
+
+        throw new Error('You shall not pass!');
       });
     });
 
-    context('given a signed request without a full stop', function() {
-      it('should return null', function() {
-        var verify = bc.verify('12345');
-        should.not.exist(verify);
+    context('given a signed request without a full stop', () => {
+      it('should return null', () => {
+        try {
+          bc.verify('12345');
+        } catch (e) {
+          e.message.should.match(/full stop/);
+          return;
+        }
+
+        throw new Error('You shall not pass!');
       });
     });
 
-    context('given an invalid signature', function() {
-      it('should return null', function() {
-        var verify = bc.verify('eyJmb28iOiJmb28ifQ==.Zm9v');
-        should.not.exist(verify);
+    context('given an invalid signature', () => {
+      it('should return null', () => {
+        try {
+          bc.verify('eyJmb28iOiJmb28ifQ==.Zm9v');
+        } catch (e) {
+          e.message.should.match(/invalid/);
+          return;
+        }
+
+        throw new Error('You shall not pass!');
       });
     });
 
-    it('should return the JSON data', function() {
-      var verify = bc.verify(
+    it('should return the JSON data', () => {
+      const verify = bc.verify(
         'eyJmb28iOiJmb28ifQ==.YjMzMTQ2ZGU4ZTUzNWJiOTI3NTI1ODJmNzhiZGM' +
         '5NzBjNGQ3MjZkZDdkMDY1MjdkZGYxZDA0NGZjNDVjYmNkMA=='
       );
@@ -78,255 +87,66 @@ describe('BigCommerce', function() {
     });
   });
 
-  describe('#callback', function() {
-    context('given an invalid signature', function() {
-      it('should return an error', function(done) {
-        bc.callback('eyJmb28iOiJmb28ifQ==.Zm9v', function(err) {
-          err.should.not.be.null;
-          done();
-        });
+  describe('#authorize', () => {
+    beforeEach(() => {
+      self.runStub = self.sandbox.stub(Request.prototype, 'run')
+        .returns(Promise.resolve({ test: true }));
+    });
+
+    const query = { code: '', scope: '', context: '' };
+
+    it('should return an object', () => {
+      return bc.authorize(query)
+        .then(data => data.should.not.be.null);
+    });
+
+    context('when the query params are missing', () => {
+      it('should return an error', () => {
+        return bc.authorize(null)
+          .then(() => should.fail('You shall not pass!'))
+          .catch(err => err.message.should.match(/are required/));
       });
     });
 
-    it('should return the data', function(done) {
-      bc.callback(
-        'eyJmb28iOiJmb28ifQ==.YjMzMTQ2ZGU4ZTUzNWJiOTI3NTI1ODJmNzhiZGM' +
-        '5NzBjNGQ3MjZkZDdkMDY1MjdkZGYxZDA0NGZjNDVjYmNkMA==',
-        function(err, data) {
-          should.not.exist(err);
-          data.foo.should.equal('foo');
-          done();
-        }
-      );
-    });
-  });
-
-  describe('#authorise', function() {
-    var query = { code: '', scope: '', context: '' };
-
-    context('when the query params are missing', function() {
-      it('should return an error', function(done) {
-        bc.authorise(null, function(err) {
-          err.should.not.be.null;
-          done();
-        });
+    context('when the authorization fails', () => {
+      beforeEach(() => {
+        self.runStub.returns(Promise.reject(new Error('foo')));
       });
-    });
 
-    context('when the authorisation fails', function() {
-      it('should return and error', function(done) {
-        var requestStub = sandbox.stub(
-          Request.prototype,
-          'completeRequest',
-          function(method, path, data, cb) {
-            cb(new Error('Test Request Error'), null, { text: 'Test error text' });
-          }
-        );
-
-        bc.authorise(query, function(err, data) {
-          should.not.exist(data);
-          err.should.not.be.null;
-          requestStub.restore();
-          done();
-        });
-      });
-    });
-
-    it('should return an object', function(done) {
-      var requestStub = sandbox.stub(
-        Request.prototype,
-        'completeRequest',
-        function(method, path, data, cb) {
-          cb(null, {}, { text: '' });
-        }
-      );
-
-      bc.authorise(query, function(err, data) {
-        should.not.exist(err);
-        data.should.not.be.null;
-        requestStub.restore();
-        done();
-      });
-    });
-
-    it('should work for its naming alias "authorize"', function(done) {
-      var requestStub = sandbox.stub(
-        Request.prototype,
-        'completeRequest',
-        function(method, path, data, cb) {
-          cb(null, {}, { text: '' });
-        }
-      );
-
-      bc.authorize(query, function(err, data) {
-        should.not.exist(err);
-        data.should.not.be.null;
-        requestStub.restore();
-        done();
+      it('should return and error', () => {
+        return bc.authorize(query)
+          .then(() => should.fail('You shall not pass!'))
+          .catch(err => err.message.should.equal('foo'));
       });
     });
   });
 
-  describe('#checkRequirements', function() {
-  });
-
-  describe('#createAPIRequest', function() {
-    it('should create a request object with the correct headers', function() {
-      var request = bc.createAPIRequest();
-      request.headers['Content-Type'].should.equal('application/json');
+  describe('#createAPIRequest', () => {
+    it('should create a request object with the correct headers', () => {
+      const request = bc.createAPIRequest();
       request.headers['X-Auth-Client'].should.equal('123456abcdef');
       request.headers['X-Auth-Token'].should.equal('123456');
     });
 
-    it('should pass the correct log level to the request object', function() {
-      var infoBc = new BigCommerce({
-        accessToken: '123456',
-        clientId: 'abcdef',
-        logLevel: 'info'
-      });
-
-      var request = infoBc.createAPIRequest();
-      request.logger.level.should.equal(1);
-    });
-
-    it('should have the correct API hostname', function() {
-      var request = bc.createAPIRequest();
+    it('should have the correct API hostname', () => {
+      const request = bc.createAPIRequest();
       request.hostname.should.equal('api.bigcommerce.com');
     });
   });
 
-  describe('#request', function() {
-    context('when the header requirements are not met', function() {
-      it('should return an error', function(done) {
-        new BigCommerce({ }).request('get', '/foo', null, function(err) {
-          err.should.not.be.null;
-          done();
-        });
-      });
-
-      it('should reject with an error', function(done) {
-        new BigCommerce({ }).request('get', '/foo', null)
-          .then(function() {
-            done(new Error('Should not resolve'));
-          })
-          .catch(function(err) {
-            err.should.not.be.null;
-            done();
-          });
-      });
+  describe('#request', () => {
+    beforeEach(() => {
+      self.requestStub = self.sandbox.stub(Request.prototype, 'run')
+        .returns(Promise.resolve({ text: '' }));
     });
 
-    context('when no responseType is given', function() {
-      it('should call the request object with no extension', function(done) {
-        var requestStub = sandbox.stub(
-          Request.prototype,
-          'completeRequest',
-          function(method, path, data, cb) {
-            path.should.equal('/stores/12abc/v2/foo');
-            cb(null, {}, { text: '' });
-          }
-        );
-
-        bc.request('get', '/foo', null, function() {
-          requestStub.restore();
-          done();
-        });
-      });
+    it('should make a call to the request object', () => {
+      return bc.request('get', '/foo')
+        .then(() => sinon.assert.calledOnce(self.requestStub));
     });
 
-    context('when the response type is xml', function() {
-      var xmlBc = new BigCommerce({
-        accessToken: '123456',
-        clientId: 'abcdef',
-        storeHash: 'abcd/1',
-        responseType: 'xml'
-      });
-
-      it('should call the request object with extension .xml', function(done) {
-        var requestStub = sandbox.stub(
-          Request.prototype,
-          'completeRequest',
-          function(method, path, data, cb) {
-            path.should.equal('/stores/abcd/1/v2/foo.xml');
-            cb(null, {}, { text: '' });
-          }
-        );
-
-        xmlBc.request('get', '/foo', null, function() {
-          requestStub.restore();
-          done();
-        });
-      });
-    });
-
-    context('when the response type is json', function() {
-      var jsonBc = new BigCommerce({
-        accessToken: '123456',
-        clientId: 'abcdef',
-        storeHash: 'abcd/1',
-        responseType: 'json'
-      });
-
-      it('should make a call to the request object with an empty extension', function(done) {
-        var requestStub = sandbox.stub(
-          Request.prototype,
-          'completeRequest',
-          function(method, path, data, cb) {
-            path.should.equal('/stores/abcd/1/v2/foo');
-            cb(null, {}, { text: '' });
-          }
-        );
-
-        jsonBc.request('get', '/foo', null, function() {
-          requestStub.restore();
-          done();
-        });
-      });
-    });
-
-    it('should make a call to the request object', function(done) {
-      var requestStub = sandbox.stub(
-        Request.prototype,
-        'completeRequest',
-        function(method, path, data, cb) {
-          cb(null, {}, { text: '' });
-        }
-      );
-
-      bc.request('get', '/foo', null, function() {
-        sinon.assert.calledOnce(requestStub);
-        requestStub.restore();
-        done();
-      });
-    });
-
-    it('should use v3 for catalog requests (LEGACY)', function(done) {
-      var requestStub = sandbox.stub(
-        Request.prototype,
-        'completeRequest',
-        function(method, path, data, cb) {
-          path.should.equal('/stores/12abc/v3/catalog');
-          cb(null, {}, { text: '' });
-        }
-      );
-
-      bc.request('get', '/catalog', null, function() {
-        requestStub.restore();
-        done();
-      });
-    });
-
-    it('should use v3 if specified in config', function(done) {
-      var requestStub = sandbox.stub(
-        Request.prototype,
-        'completeRequest',
-        function(method, path, data, cb) {
-          path.should.equal('/stores/12abc/v3/themes');
-          cb(null, {}, { text: '' });
-        }
-      );
-
-      var bcV3 = new BigCommerce({
+    it('should use v3 if specified in config', () => {
+      const bcV3 = new BigCommerce({
         secret: '123456abcdef',
         clientId: '123456abcdef',
         callback: 'http://foo.com',
@@ -335,153 +155,104 @@ describe('BigCommerce', function() {
         apiVersion: 'v3'
       });
 
-      bcV3.request('get', '/themes', null, function() {
-        requestStub.restore();
-        done();
+      return bcV3.request('get', '/themes')
+        .then(() => sinon.assert.calledWith(self.requestStub, 'get', '/stores/12abc/v3/themes'));
+    });
+
+    context('when the header requirements are not met', () => {
+      it('should return an error', () => {
+        const bc = new BigCommerce({ });
+        return bc.request('get', '/foo')
+          .then(() => should.fail('You shall not pass!'))
+          .catch(e => e.message.should.match(/access token/));
+      });
+    });
+
+    context('when the response type is xml', () => {
+      const xmlBc = new BigCommerce({
+        accessToken: '123456',
+        clientId: 'abcdef',
+        storeHash: 'abcd/1',
+        responseType: 'xml'
+      });
+
+      it('should call the request object with extension .xml', () => {
+        return xmlBc.request('get', '/foo')
+          .then(() => sinon.assert.calledWith(self.requestStub, 'get', '/stores/abcd/1/v2/foo.xml'));
+      });
+    });
+
+    context('when the response type is json', () => {
+      it('should make a call to the request object with an empty extension', () => {
+        const jsonBc = new BigCommerce({
+          accessToken: '123456',
+          clientId: 'abcdef',
+          storeHash: 'abcd/1',
+          responseType: 'json'
+        });
+
+        return jsonBc.request('get', '/foo')
+          .then(() => sinon.assert.calledWith(self.requestStub, 'get', '/stores/abcd/1/v2/foo'));
       });
     });
   });
 
-  describe('#get', function() {
-    it('should make a request with the correct arguments', function(done) {
-      var requestStub = sandbox.stub(
-        BigCommerce.prototype,
-        'request',
-        function(type, path, data, cb) {
-          type.should.equal('get');
-          path.should.not.be.null;
-          should.not.exist(data);
-          cb(null, {}, { text: '' });
-        }
-      );
-
-      bc.get('/foo', function() {
-        requestStub.restore();
-        done();
-      });
+  describe('#get', () => {
+    beforeEach(() => {
+      self.requestStub = self.sandbox.stub(Request.prototype, 'run')
+        .returns(Promise.resolve({ text: '' }));
     });
 
-    it('should resolve a promise with the data', function() {
-      var fooNock = nock('https://api.bigcommerce.com')
-        .get('/stores/12abc/v2/foo')
-        .reply(200, { some: 'data' });
-
+    it('should make a request with the correct arguments', () => {
       return bc.get('/foo')
-        .then(function(data) {
-          fooNock.done();
-          data.should.deep.equal({ some: 'data' });
-        });
-    });
-
-    it('should reject a promise with an error', function(done) {
-      var fooNock = nock('https://api.bigcommerce.com')
-        .get('/stores/12abc/v2/foo')
-        .reply(400, {});
-
-      bc.get('/foo')
-        .then(function() {
-          done(new Error('Should not resolve'));
-        })
-        .catch(function(err) {
-          err.code.should.equal(400);
-          err.should.be.a('error');
-          done();
+        .then(res => {
+          res.should.deep.equal({ text: '' });
+          sinon.assert.calledWith(self.requestStub, 'get', '/stores/12abc/v2/foo', undefined);
         });
     });
   });
 
-  describe('#post', function() {
-    it('should make a request with the correct arguments', function(done) {
-      var requestStub = sandbox.stub(
-        BigCommerce.prototype,
-        'request',
-        function(type, path, data, cb) {
-          type.should.equal('post');
-          path.should.not.be.null;
-          data.should.not.be.null;
-          cb(null, {}, { text: '' });
-        }
-      );
-
-      bc.post('/foo', {}, function() {
-        requestStub.restore();
-        done();
-      });
+  describe('#post', () => {
+    beforeEach(() => {
+      self.requestStub = self.sandbox.stub(Request.prototype, 'run')
+        .returns(Promise.resolve({ text: '' }));
     });
 
-    it('should resolve a promise with the data', function() {
-      var fooNock = nock('https://api.bigcommerce.com')
-        .post('/stores/12abc/v2/foo')
-        .reply(200, { some: 'data' });
-
-      return bc.post('/foo')
-        .then(function(data) {
-          fooNock.done();
-          data.should.deep.equal({ some: 'data' });
+    it('should make a request with the correct arguments', () => {
+      return bc.post('/foo', { foo: 'bar' })
+        .then(res => {
+          res.should.deep.equal({ text: '' });
+          sinon.assert.calledWith(self.requestStub, 'post', '/stores/12abc/v2/foo', { foo: 'bar' });
         });
     });
   });
 
-  describe('#put', function() {
-    it('should make a request with the correct arguments', function(done) {
-      var requestStub = sandbox.stub(
-        BigCommerce.prototype,
-        'request',
-        function(type, path, data, cb) {
-          type.should.equal('put');
-          path.should.not.be.null;
-          data.should.not.be.null;
-          cb(null, {}, { text: '' });
-        }
-      );
-
-      bc.put('/foo', {}, function() {
-        requestStub.restore();
-        done();
-      });
+  describe('#put', () => {
+    beforeEach(() => {
+      self.requestStub = self.sandbox.stub(Request.prototype, 'run')
+        .returns(Promise.resolve({ text: '' }));
     });
 
-    it('should resolve a promise with the data', function() {
-      var fooNock = nock('https://api.bigcommerce.com')
-        .put('/stores/12abc/v2/foo')
-        .reply(200, { some: 'data' });
-
-      return bc.put('/foo')
-        .then(function(data) {
-          fooNock.done();
-          data.should.deep.equal({ some: 'data' });
+    it('should make a request with the correct arguments', () => {
+      return bc.put('/foo', { foo: 'bar' })
+        .then(res => {
+          res.should.deep.equal({ text: '' });
+          sinon.assert.calledWith(self.requestStub, 'put', '/stores/12abc/v2/foo', { foo: 'bar' });
         });
     });
   });
 
-  describe('#delete', function() {
-    it('should make a request with the correct arguments', function(done) {
-      var requestStub = sandbox.stub(
-        BigCommerce.prototype,
-        'request',
-        function(type, path, data, cb) {
-          type.should.equal('delete');
-          path.should.not.be.null;
-          data.should.not.be.null;
-          cb(null, {}, { text: '' });
-        }
-      );
-
-      bc.delete('/foo', {}, function() {
-        requestStub.restore();
-        done();
-      });
+  describe('#delete', () => {
+    beforeEach(() => {
+      self.requestStub = self.sandbox.stub(Request.prototype, 'run')
+        .returns(Promise.resolve({ text: '' }));
     });
 
-    it('should resolve a promise with the data', function() {
-      var fooNock = nock('https://api.bigcommerce.com')
-        .delete('/stores/12abc/v2/foo')
-        .reply(200, { some: 'data' });
-
+    it('should make a request with the correct arguments', () => {
       return bc.delete('/foo')
-        .then(function(data) {
-          fooNock.done();
-          data.should.deep.equal({ some: 'data' });
+        .then(res => {
+          res.should.deep.equal({ text: '' });
+          sinon.assert.calledWith(self.requestStub, 'delete', '/stores/12abc/v2/foo', undefined);
         });
     });
   });

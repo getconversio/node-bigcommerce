@@ -1,11 +1,8 @@
 # Bigcommerce for Node.js
 
-[![Code Climate](https://codeclimate.com/repos/54b673f7e30ba0704d01ed1d/badges/1745c700ed531663cc86/gpa.svg)](https://codeclimate.com/repos/54b673f7e30ba0704d01ed1d/feed) [![Test Coverage](https://codeclimate.com/repos/54b673f7e30ba0704d01ed1d/badges/1745c700ed531663cc86/coverage.svg)](https://codeclimate.com/repos/54b673f7e30ba0704d01ed1d/feed)
+[![Build Status](https://travis-ci.org/getconversio/node-bigcommerce.svg?branch=master)](https://travis-ci.org/getconversio/node-bigcommerce)
 
-[![Build Status](https://travis-ci.org/getconversio/node-bigcommerce.svg?branch=master)](https://travis-ci.org/getconversio/node-bigcommerce) [![bitHound Overall Score](https://www.bithound.io/github/getconversio/node-bigcommerce/badges/score.svg)](https://www.bithound.io/github/getconversio/node-bigcommerce) [![bitHound Dependencies](https://www.bithound.io/github/getconversio/node-bigcommerce/badges/dependencies.svg)](https://www.bithound.io/github/getconversio/node-bigcommerce/master/dependencies/npm) [![bitHound Dev Dependencies](https://www.bithound.io/github/getconversio/node-bigcommerce/badges/devDependencies.svg)](https://www.bithound.io/github/getconversio/node-bigcommerce/master/dependencies/npm) [![bitHound Code](https://www.bithound.io/github/getconversio/node-bigcommerce/badges/code.svg)](https://www.bithound.io/github/getconversio/node-bigcommerce)
-
-A node module for authentication and use with the BigCommerce v2 API
-
+A node module for authentication and use with the BigCommerce API
 
 ## Installation
 
@@ -15,14 +12,19 @@ To install the module using NPM:
 npm install node-bigcommerce
 ```
 
+Or Yarn:
+```
+yarn add node-bigcommerce
+```
+
 ## Setup
 
 Include the 'node-bigcommerce' module within your script and instantiate it with a config:
 
 ```javascript
-var BigCommerce = require('node-bigcommerce');
+const BigCommerce = require('node-bigcommerce');
 
-var bigCommerce = new BigCommerce({
+const bigCommerce = new BigCommerce({
   logLevel: 'info',
   clientId: '128ecf542a35ac5270a87dc740918404',
   secret: 'acbd18db4cc2f85cedef654fccc4a4d8',
@@ -34,7 +36,7 @@ var bigCommerce = new BigCommerce({
 
 ##### Instantiating a BigCommerce instance without a config object will result in an error
 
-## Authorisation
+## Authorization
 
 Set up your Big Commerce as above and pass the following configuration options in:
 
@@ -50,25 +52,26 @@ Set up your Big Commerce as above and pass the following configuration options i
 You will be able to get your Client ID and Secret within your application setup. Below is an example using Express' routes:
 
 ```javascript
-var express = require('express'),
+const express = require('express'),
   router = express.Router(),
   BigCommerce = require('node-bigcommerce');
 
-var bigCommerce = new BigCommerce({
+const bigCommerce = new BigCommerce({
   clientId: '128ecf542a35ac5270a87dc740918404',
   secret: 'acbd18db4cc2f85cedef654fccc4a4d8',
   callback: 'https://myapplication.com/auth',
   responseType: 'json'
 });
 
-router.get('/auth', function(req, res) {
-  bigCommerce.authorise(req.query, function(err, data){
-    res.render('integrations/auth', { title: 'Authorised!', data: data });
-  })
+router.get('/auth', (req, res, next) => {
+  bigCommerce.authorize(req.query)
+    .then(data => res.render('integrations/auth', { title: 'Authorized!', data: data })
+    .catch(next);
+  });
 });
 ```
 
-The 'authorise' method requires the query parameters from the request to be passed. These are required to request a permanent access token which will be passed back in the data object.
+The `authorize` method requires the query parameters from the request to be passed. These are required to request a permanent access token which will be passed back in the data object.
 
 An example data object:
 
@@ -85,30 +88,30 @@ An example data object:
 }
 ```
 
-From this object you can store the 'access_token' for re-use when calling the Big Commerce API.
+From this object you can store the `access_token` for re-use when calling the Big Commerce API.
 
 ## Load & Uninstall
 
-The only configuration element required to use the callback method (used for both load and uninstall endpoints) is 'secret'. Below is an example using Express' routes:
+The only configuration element required to use the `verify` method (used for both load and uninstall endpoints) is `secret`. Below is an example using Express' routes:
 
 ```javascript
-var express = require('express'),
+const express = require('express'),
   router = express.Router(),
   BigCommerce = require('node-bigcommerce');
 
-var bigCommerce = new BigCommerce({
+const bigCommerce = new BigCommerce({
   secret: 'acbd18db4cc2f85cedef654fccc4a4d8',
   responseType: 'json'
 });
 
-router.get('/load', function(req, res) {
-  bigCommerce.callback(req.query['signed_payload'], function(err, data){
-    res.render('integrations/welcome', { title: 'Welcome!', data: data });
-  })
+router.get('/load', (req, res, next) => {
+  bigCommerce.verify(req.query['signed_payload'])
+    .then(data => res.render('integrations/welcome', { title: 'Welcome!', data: data })
+    .catch(next);
 });
 ```
 
-The 'callback' method requires the 'signed_payload' query parameter to be passed from the request. This is used to verify that the request has come from Big Commerce. The callback method returns the following object:
+The `verify` method requires the `signed_payload` query parameter to be passed from the request. This is used to verify that the request has come from Big Commerce. The `verify` method returns the following object:
 
 ```
 {
@@ -126,7 +129,7 @@ This will allow you to automatically log the user in (if required) when BigComme
 
 ## Calling the API
 
-The API can be called once the user has been authorised and has an access token. There is a helper for each type of request available within Big Commerce (GET, POST, PUT, DELETE).
+The API can be called once the user has been authorized and has an access token. There is a helper for each type of request available within Big Commerce (GET, POST, PUT, DELETE).
 
 To make an API Request you will need the following minimum configuration:
 
@@ -141,32 +144,32 @@ To make an API Request you will need the following minimum configuration:
 Parameters that are added to the url need to be escaped before they are passed as part of the path of any call:
 
 ```javascript
-var path = '/products?name=' + escape('Plain T-Shirt');
+const path = '/products?name=' + escape('Plain T-Shirt');
 ```
 
 
 ### GET
 
-The 'Get' call requires a path and callback: get(path, callback):
+The `Get` call requires a path: get(path):
 
 ```javascript
-var BigCommerce = require('node-bigcommerce');
+const BigCommerce = require('node-bigcommerce');
 
-var bigCommerce = new BigCommerce({
+const bigCommerce = new BigCommerce({
   clientId: '128ecf542a35ac5270a87dc740918404'
   accessToken: '9df3b01c60df20d13843841ff0d4482c',
   responseType: 'json'
 });
 
-bigCommerce.get('/products', function(err, data, response){
-  // Catch any errors, or handle the data returned
-  // The response object is passed back for convenience
-});
+bigCommerce.get('/products')
+  .then(data => {
+    // Catch any errors, or handle the data returned
+  });
 ```
 
 ### POST & PUT
 
-The 'POST' & 'PUT' calls requires a path and callback with optional data to be sent: post(path, data, callback):
+The 'POST' & 'PUT' calls requires a path with optional data to be sent: post(path, data):
 
 ```javascript
 var BigCommerce = require('node-bigcommerce');
@@ -196,114 +199,58 @@ bigCommerce.post('/products', product, function(err, data, response){
 
 ### DELETE
 
-The 'DELETE' call requires a path and callback with optional data to be sent: delete(path, data, callback). A delete call will not return any data and will return a response status of 204.
+The 'DELETE' call requires a path: delete(path). A delete call will not return any data and will return a response status of 204.
 
 ```javascript
-var BigCommerce = require('node-bigcommerce');
+const BigCommerce = require('node-bigcommerce');
 
-var bigCommerce = new BigCommerce({
+const bigCommerce = new BigCommerce({
   clientId: '128ecf542a35ac5270a87dc740918404',
   accessToken: '9df3b01c60df20d13843841ff0d4482c'
 });
 
-bigCommerce.delete('/products/' + productId, null, function(err, data, response){
+bigCommerce.delete('/products/' + productId)
+  .then(() => {
   // Catch any errors, data will be null
-  // The response object is passed back for convenience
-});
+  });
 ```
 
-## Logging
+## Debugging
 
-There are 2 levels of logging which can be set in the config during instantiation. By default the logging level is set to 'errors'. For more verbose debugging the log level of 'info' can be set:
+We use `debug`, so just run with environment variable DEBUG set to `node-bigcommerce:*`
 
-```javascript
-var BigCommerce = require('node-bigcommerce');
-
-var bigCommerce = new BigCommerce({
-  logLevel: 'info',
-  clientId: '128ecf542a35ac5270a87dc740918404',
-  accessToken: '9df3b01c60df20d13843841ff0d4482c',
-  responseType: 'json'
-});
-
-bigCommerce.post('/products?name=' + escape('Plain T-Shirt'), null, function(err, data, response){
-  // Catch any errors, data will be null
-  // The response object is passed back for convenience
-});
+```js
+$ DEBUG=node-bigcommerce:* node my_test.js
 ```
-
-We recommend you only use the log level 'info' on a development build as it logs a lot of information.
 
 ## Response Type
 
 You may require the Big Commerce API to return data in a specific format. To return in either JSON or XML just add a 'responseType' to the config:
 
 ```javascript
-var BigCommerce = require('node-bigcommerce');
+const BigCommerce = require('node-bigcommerce');
 
-var bigCommerce = new BigCommerce({
+const bigCommerce = new BigCommerce({
   logLevel: 'info',
   clientId: '128ecf542a35ac5270a87dc740918404',
   accessToken: '9df3b01c60df20d13843841ff0d4482c',
   responseType: 'xml'
 });
 
-bigCommerce.post('/products?name=' + escape('Plain T-Shirt'), null, function(err, data, response){
+bigCommerce.post('/products?name=' + escape('Plain T-Shirt'))
+  .then(data => {
   // Catch any errors, data will be null
-  // The response object is passed back for convenience
-});
+  });
 ```
 
 Note that when returning in JSON the data will be parsed into an object, XML will not, and will return a string. When no response type is given the type will resort to whatever the BigCommerce default is.
 
 Webhooks can only be JSON so when dealing with the '/hooks' endpoint leave the responseType blank (or null).
 
-## Notes
-
-You can instantiate the BigCommerce object within a script and re-use throughout. The config object within the BigCommerce allows the addition of other elements after the initial instantiation. For example, in a scenario when you have the authorisation and a call to the api, you can do the following:
-
-```javascript
-var express = require('express'),
-  router = express.Router(),
-  BigCommerce = require('node-bigcommerce');
-
-var bigCommerce = new BigCommerce({
-  clientId: '128ecf542a35ac5270a87dc740918404',
-  secret: 'acbd18db4cc2f85cedef654fccc4a4d8',
-  callback: 'https://myapplication.com/auth'
-});
-
-router.get('/auth', function(req, res) {
-  bigCommerce.authorise(req.query, function(err, data){
-
-    /**
-     * Your code to save the access token &
-     * store hash to the current user
-     */
-
-    res.render('integrations/auth', { title: 'Authorised!', data: data });
-  })
-});
-
-router.get('/products', function(req, res) {
-
-  /**
-   * Your code to get the current users access token & store hash
-   * and add it to the variables: var accessToken & var storeHash
-   */
-
-  bigCommerce.config.accessToken = accessToken;
-  bigCommerce.config.storeHash = storeHash;
-  bigCommerce.get('/products?min_id=3&max_id=10', function(err, data){
-    res.render('integrations/products', { title: 'Product List Between 3 & 10', data: data });
-  })
-});
-```
-
 ## Testing
 
 ```
-npm test
+yarn test
 ```
 
 ## Contributing

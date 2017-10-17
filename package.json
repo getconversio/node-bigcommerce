@@ -1,13 +1,12 @@
 {
   "name": "node-bigcommerce",
-  "version": "2.5.2",
+  "version": "3.0.0",
   "description": "A node module for authentication and use with the BigCommerce API",
   "main": "./lib/bigcommerce",
   "scripts": {
+    "autotest": "node_modules/.bin/supervisor -q -n exit -x node_modules/.bin/_mocha --",
     "exectests": "node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha",
-    "jshint": "node_modules/.bin/jshint lib",
-    "jscs": "node_modules/.bin/jscs lib",
-    "lint": "npm run jshint && npm run jscs",
+    "lint": "node_modules/.bin/eslint lib test",
     "test": "npm run exectests && npm run lint"
   },
   "repository": {
@@ -31,15 +30,15 @@
   "devDependencies": {
     "agentkeepalive": "^3.1.0",
     "chai": "^3.5.0",
+    "eslint": "^4.9.0",
+    "eslint-config-conversio": "^1.0.4",
     "istanbul": "^0.4.2",
-    "jscs": "^2.9.0",
-    "jshint": "^2.9.1",
     "mocha": "^2.4.5",
     "nock": "^7.0.2",
-    "require-reload": "^0.2.2",
-    "sinon": "^1.17.3"
+    "sinon": "^1.17.3",
+    "supervisor": "^0.12.0"
   },
   "dependencies": {
-    "es6-promise": "^3.1.2"
+    "debug": "^3.1.0"
   }
 }
