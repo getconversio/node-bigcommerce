@@ -191,10 +191,10 @@ var product = {
 }
 
 // Replace 'post' with 'put' for a put call
-bigCommerce.post('/products', product, function(err, data, response){
+bigCommerce.post('/products', product)
+  .then(data => {
   // Catch any errors, or handle the data returned
-  // The response object is passed back for convenience
-});
+  });
 ```
 
 ### DELETE
