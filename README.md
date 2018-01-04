@@ -105,9 +105,12 @@ const bigCommerce = new BigCommerce({
 });
 
 router.get('/load', (req, res, next) => {
-  bigCommerce.verify(req.query['signed_payload'])
-    .then(data => res.render('integrations/welcome', { title: 'Welcome!', data: data })
-    .catch(next);
+  try {
+    const data = bigCommerce.verify(req.query['signed_payload']);
+    res.render('integrations/welcome', { title: 'Welcome!', data: data });
+  } catch (err) {
+    next(err);
+  }
 });
 ```
 
