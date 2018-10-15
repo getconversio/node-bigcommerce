@@ -115,11 +115,20 @@ describe('Request', () => {
         .defaultReplyHeaders({ 'Content-Type': 'application/xml' })
         .post('/orders')
         .reply(200, '<xml></xml>');
+      nock('https://api.bigcommerce.com')
+        .defaultReplyHeaders({ 'Content-Type': 'application/json' })
+        .post('/customers')
+        .reply(200, '<html></html>');
     });
 
     it('should return the raw response', () => {
       return request.run('post', '/orders', { })
         .then(res => res.should.equal('<xml></xml>'));
+    });
+
+    it('should attach the response if the JSON cannot be parsed', () => {
+      return request.run('post', '/customers', { })
+        .catch(err => err.should.have.property('responseBody'));
     });
   });
 
