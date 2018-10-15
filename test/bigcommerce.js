@@ -68,6 +68,19 @@ describe('BigCommerce', () => {
     context('given an invalid signature', () => {
       it('should return null', () => {
         try {
+          bc.verify('eyJmb28iOiJmb28ifQ==.YjMzMTQ2ZGU4ZTUzNWJiOTI3NTI1ODJmNzhiZGM5NzBjNGQ3MjZkZDdkMDY1MjdkZGYxZDA0NGZjNDVjYmNkMQ==');
+        } catch (e) {
+          e.message.should.match(/invalid/);
+          return;
+        }
+
+        throw new Error('You shall not pass!');
+      });
+    });
+
+    context('given an invalid signature (different length)', () => {
+      it('should return null', () => {
+        try {
           bc.verify('eyJmb28iOiJmb28ifQ==.Zm9v');
         } catch (e) {
           e.message.should.match(/invalid/);
