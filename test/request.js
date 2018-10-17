@@ -3,7 +3,8 @@
 const Request = require('../lib/request'),
   should = require('chai').should(),
   nock = require('nock'),
-  HttpsAgent = require('agentkeepalive').HttpsAgent;
+  HttpsAgent = require('agentkeepalive').HttpsAgent,
+  zlib = require('zlib');
 
 describe('Request', () => {
   const self = { };
@@ -174,6 +175,33 @@ describe('Request', () => {
       .then(res => {
         res.should.be.a('object');
         res.order.should.equal(true);
+      });
+  });
+
+  it('should accept and parse a GZIP JSON response', () => {
+    const data = JSON.stringify({ order: true });
+    const buffer = Buffer.from(data);
+    const zipped = zlib.gzipSync(buffer);
+    nock('https://api.bigcommerce.com')
+      .post('/orders')
+      .reply(200, zipped, {
+        'X-Transfer-Length': String(zipped.length),
+        'Content-Length': undefined,
+        'Content-Encoding': 'gzip',
+        'Content-Type': 'application/json'
+      });
+
+    const request = new Request('api.bigcommerce.com', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept-Encoding': 'gzip, deflate'
+      }
+    });
+
+    return request.run('post', '/orders')
+      .then(res => {
+        should.exist(res);
+        res.should.have.property('order', true);
       });
   });
 });
