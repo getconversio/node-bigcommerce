@@ -7,7 +7,7 @@ deploy:
   email:
     secure: dsBGPXl1VvR70rJ/UnRuaLwiesvmfxOSeWfuLOlWHU3+2uUA7xLOOIyjHxP3mlz9OLsL3A/tMsYBMj6bM3SrtvbtBwnAQZ+RKWjyIsiBTHYaIrXuJP+kbQIguaDTo8rC45U2VwZRQu50cc2Mln3jeGzlho4iPdZLe4rdRLnbAD0=
   api_key:
-    secure: o0vLZpRdqWyu1Ez/x7Nug57uMOUahxpsKkEKNVk0AjIMPyc4lw1HaK9WRV0lm9F3R6kzBwxiUnfwvrcnmaEZRgnhcSF4WmqHtHB3u/lbNXTrJOWRnyjIESlA9IuIijbPZNKoRFac2DP3nHDcELKpGp0LeIFNZs47WvBM7dnDtdI=
+    secure: GPt9SSxfd2gDfd6YfjZtGZghjjT4mtlFhA6Yyojax1frU4gzH2j9sd0XuNI1Q/f0n7WAeo4pFPru5o2uxPJzQUlJzWy3DoLJX3rLrOviXX6zIgF7o4XCtYb3SVFIG7aEpNTxBbh1zQcL8ecHROzs7MFxE+y/dumsCSVFnfT3o8E=
   on:
     tags: true
     repo: getconversio/node-bigcommerce
