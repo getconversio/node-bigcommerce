@@ -1,3 +1,9 @@
+4.0.0
+=====
+- [breaking] Updated to `async/await`
+- [breaking] Removed body from error text, added as property in error (#62)
+- [breaking] Added gzip support (#60)
+
 3.0.0
 =====
 
