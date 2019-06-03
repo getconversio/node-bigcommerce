@@ -204,4 +204,30 @@ describe('Request', () => {
         res.should.have.property('order', true);
       });
   });
+
+  it('should accept and parse a non-GZIP JSON response', () => {
+    const data = JSON.stringify({ order: true });
+    const buffer = Buffer.from(data);
+
+    nock('https://api.bigcommerce.com')
+      .post('/orders')
+      .reply(200, buffer, {
+        'X-Transfer-Length': String(buffer.length),
+        'Content-Length': undefined,
+        'Content-Type': 'application/json'
+      });
+
+    const request = new Request('api.bigcommerce.com', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept-Encoding': '*'
+      }
+    });
+
+    return request.run('post', '/orders')
+      .then(res => {
+        should.exist(res);
+        res.should.have.property('order', true);
+      });
+  });
 });

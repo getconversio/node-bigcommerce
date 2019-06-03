@@ -30,6 +30,7 @@ const bigCommerce = new BigCommerce({
   secret: 'acbd18db4cc2f85cedef654fccc4a4d8',
   callback: 'https://myapplication.com/auth',
   responseType: 'json',
+  headers: { 'Accept-Encoding': '*' }, // Override headers (Overriding the default encoding of GZipped is useful in development)
   apiVersion: 'v3' // Default is v2
 });
 ```
