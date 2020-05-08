@@ -66,9 +66,8 @@ const bigCommerce = new BigCommerce({
 
 router.get('/auth', (req, res, next) => {
   bigCommerce.authorize(req.query)
-    .then(data => res.render('integrations/auth', { title: 'Authorized!', data: data })
+    .then(data => res.render('integrations/auth', { title: 'Authorized!', data: data }))
     .catch(next);
-  });
 });
 ```
 
