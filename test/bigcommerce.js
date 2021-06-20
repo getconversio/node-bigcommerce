@@ -1,5 +1,7 @@
 'use strict';
 
+const jwt = require('jsonwebtoken');
+
 const BigCommerce = require('../lib/bigcommerce'),
   Request = require('../lib/request'),
   should = require('chai').should(),
@@ -156,6 +158,23 @@ describe('BigCommerce', () => {
           )
         );
         verify.sub.should.equal('stores/12abc');
+      });
+    });
+  });
+
+  describe('#createCustomerLoginJWT', () => {
+    context('given a customer ID and channel ID', () => {
+      it('should return a valid jwt', () => {
+        const loginJWT = bc.createCustomerLoginJWT(1);
+        Math.floor(jwt.verify(loginJWT, bc.config.secret).iat - Math.floor(Date.now() / 1000))
+          .should.equal(0);
+        jwt.verify(loginJWT, bc.config.secret).store_hash.should.equal('12abc');
+        // We've already verified, so now just decode
+        jwt.decode(loginJWT).customer_id.should.equal(1);
+        jwt.decode(loginJWT).channel_id.should.equal(1);
+        jwt.decode(loginJWT).operation.should.equal('customer_login');
+        jwt.decode(loginJWT).iss.should.equal(bc.config.clientId);
+        jwt.decode(loginJWT).jti.length.should.be.above(20);
       });
     });
   });
